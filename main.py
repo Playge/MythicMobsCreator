@@ -1,5 +1,4 @@
-import discord
-import re
+import discord, os, re
 
 client = discord.Client()
 
@@ -57,12 +56,20 @@ class mythicmob:
                         "\n  Skills:\n    " + self.skills())
 
 
-# The Questionair which retrieves all the wanted values
+# The Questionaire which retrieves all the wanted values
 
 # Needed Values
 
 question_number = 1
 editor_mode = 0
+
+# All Commands with their aliases
+def command(number):
+    commands = ("set", "edit", "save", "discard")
+    try:
+        return str("mm " + commands[number] + "> ")
+    except:
+        return
 
 # Question Protocol
 @client.event
@@ -71,12 +78,18 @@ async def on_message(message):
     global help_menu
     if message.author == client.user:
         return
+    # Command to enter the editor mode | Editor mode shall be only activated for messages sent by the user who 
+    # activated it 
     if message.startswith("$mm create"):
         await message.channel.send("You are entering Editor Mode!")
         await message.channel.send(help_menu)
         editor_mode = 1
-    if message.startswith("set") & editor_mode:
-        re.search()
+    if message.startswith(command(0)) & editor_mode:
+        # Everything after "mm [command] > " is considered a command argument
+        # TODO Create function which read the arguments and sets the specified values
+        command_arguments = []
+        pass
+        # Search the message string sent by the user who entered the creator mode
 
 
 client.run(token)
