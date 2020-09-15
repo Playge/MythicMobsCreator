@@ -1,4 +1,4 @@
-import discord, os, re
+import discord, os, re, command
 
 client = discord.Client()
 
@@ -16,13 +16,6 @@ async def on_ready():
     print("MythicCreator v.1 logged in as {0.user}".format(client))
     print("")
     print("Creator: Playge")
-
-
-@client.event
-async def on_message(message):
-    if message.author == client.user:
-        return
-
 
 class mythicmob:
     class help:
@@ -56,35 +49,36 @@ class mythicmob:
                         "\n  Skills:\n    " + self.skills())
 
 
-# The Questionaire which retrieves all the wanted values
+# Setup procedure
 
-# Needed Values
+# Needed default Values
 
-question_number = 1
-editor_mode = 0
+question_number = int(0)
+editor_mode = bool(0)
+creator_mode = bool(0)
+mob_name = str("")
 
-# All Commands with their aliases
-def command(number):
-    commands = ("set", "edit", "save", "discard")
-    try:
-        return str("mm " + commands[number] + "> ")
-    except:
-        return
-
+# Blank Mob Object which is being edited
+editing_mob = mythicmob.mob(name=mob_name)
 # Question Protocol
 @client.event
 async def on_message(message):
     global editor_mode
     global help_menu
+    global creator_mode
     if message.author == client.user:
         return
-    # Command to enter the editor mode | Editor mode shall be only activated for messages sent by the user who 
-    # activated it 
+    # Command to enter the editor mode | Editor mode shall be only activated for messages sent by the user who
+    # activated it
     if message.startswith("$mm create"):
-        await message.channel.send("You are entering Editor Mode!")
+        await message.channel.send("You are entering Creator Mode!")
         await message.channel.send(help_menu)
-        editor_mode = 1
-    if message.startswith(command(0)) & editor_mode:
+        creator_mode = 1
+    if message.startswith("$mm edit"):
+        await message.channel.send("You are entering Editor Mode! for" + editing_mob.name())
+        await message.channel.send(help_menu)
+        creator_mode = 1
+    if message.startswith(command.select(0)) & editor_mode:
         # Everything after "mm [command] > " is considered a command argument
         # TODO Create function which read the arguments and sets the specified values
         command_arguments = []
